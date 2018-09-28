@@ -1,0 +1,86 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  .board-row {
+    display: flex;
+    flex-direction: row;
+
+    .square {
+      padding: 2px;
+      width: 25px;
+      height: 25px;
+      background-image: url('./middle.png');
+      background-size: cover;
+
+      &.firstcol {
+        background-image: url('./side.png');
+      }
+      &.lastcol {
+        background-image: url('./side.png');
+        transform: rotate(180deg);
+      }
+
+      &.firstrow {
+        background-image: url('./side.png');
+        transform: rotate(90deg);
+
+        &.firstcol {
+          background-image: url('./corner.png');
+          transform: rotate(90deg);
+        }
+        &.lastcol {
+          background-image: url('./corner.png');
+          transform: rotate(180deg);
+        }
+      }
+      &.lastrow {
+        background-image: url('./side.png');
+        transform: rotate(-90deg);
+
+        &.firstcol {
+          background-image: url('./corner.png');
+          transform: rotate(0deg);
+        }
+        &.lastcol {
+          background-image: url('./corner.png');
+        }
+      }
+
+      .stone {
+        border-radius: 50%;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+
+        &.blank {
+          &:hover {
+            opacity: 0.5;
+
+            &.nextblack {
+              background-color: black;
+            }
+
+            &.nextwhite {
+              background-color: white;
+              border: 2px black solid;
+            }
+          }
+        }
+
+        &.black {
+          background-color: black;
+        }
+
+        &.white {
+          border: 2px black solid;
+          background-color: white
+        }
+      }
+    }
+  }
+}
+
+

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Board from './Board.react';
+import Board from './board/Board.react';
 
 import './App.css';
 
@@ -7,9 +7,9 @@ import './App.css';
 class App extends Component {
   render() {
     const initialStones = [
-      { x: 0, y: 0, color: 1 },
-      { x: 1, y: 1, color: 2 },
-      { x: 4, y: 5, color: 2 },
+      { x: 0, y: 2, color: 1 },
+      { x: 5, y: 1, color: 2 },
+      { x: 4, y: 7, color: 2 },
     ];
 
     return (
@@ -20,7 +20,7 @@ class App extends Component {
         <p className="App-intro">
           Welcome to Go Lessons
         </p>
-        <Board initialStones={initialStones} />
+        <Board initialStones={initialStones} boardSize={13} />
       </div>
     );
   }

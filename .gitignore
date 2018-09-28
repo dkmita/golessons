@@ -1,4 +1,5 @@
 env
+golessons/**/*.css
 *.DS_Store
 *.pyc
 __pycache__

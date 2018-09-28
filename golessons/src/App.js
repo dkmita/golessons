@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import Board from './Board.react';
+
 import './App.css';
+
 
 class App extends Component {
   render() {
+    const initialStones = [
+      { x: 0, y: 0, color: 1 },
+      { x: 1, y: 1, color: 2 },
+      { x: 4, y: 5, color: 2 },
+    ];
+
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">Welcome to Go Lessons</h1>
         </header>
         <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
+          Welcome to Go Lessons
         </p>
+        <Board initialStones={initialStones} />
       </div>
     );
   }

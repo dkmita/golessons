@@ -1,7 +1,7 @@
 env
-#golessons/.idea/
-#golessons/build/
-#golessons/node_modules/
+golessons/.idea/
+golessons/build/
+golessons/node_modules/
 golessons/**/*.css
 *.DS_Store
 *.pyc

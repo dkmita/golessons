@@ -10,7 +10,9 @@
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "react-scripts": "1.1.5"
+    "react-redux": "^5.0.7",
+    "react-scripts": "1.1.5",
+    "redux": "^4.0.0"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",
@@ -18,7 +20,8 @@
     "start-js": "react-scripts start",
     "start": "npm-run-all -p watch-css start-js",
     "build-js": "react-scripts build",
-    "build": "npm-run-all build-css build-js","test": "react-scripts test --env=jsdom",
+    "build": "npm-run-all build-css build-js",
+    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
 }

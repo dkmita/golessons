@@ -1,8 +1,3 @@
-
-const BOARD_CONSTANTS = {
-  PAD: 2,
-  BLACK: 1,
-  WHITE: 2,
-}
-
-export default BOARD_CONSTANTS;
+export const PAD = 2;
+export const BLACK = 1;
+export const WHITE = 2;

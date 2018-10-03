@@ -2,15 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import BOARD_CONSTANTS from './boardConstants'
+import { BLACK, WHITE } from './boardConstants'
 
 
 class BoardSquare extends Component {
   static propTypes = {
+    addStone: PropTypes.function,
     boardSize: PropTypes.number.isRequired,
+    color: PropTypes.number,
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
-    color: PropTypes.number,
     nextMoveColor: PropTypes.number.isRequired,
   };
 
@@ -19,24 +20,22 @@ class BoardSquare extends Component {
   }
 
   render() {
-    const { boardSize, x, y, color, nextMoveColor } = this.props;
+    const { addStone, boardSize, x, y, color, nextMoveColor } = this.props;
     const squareClassNames = classnames('square', {
-      firstrow: x === 0,
-      lastrow: x === boardSize-1,
-      firstcol: y === 0,
-      lastcol: y === boardSize-1,
-    })
+      firstcol: x === 0,
+      lastcol: x === boardSize-1,
+      firstrow: y === 0,
+      lastrow: y === boardSize-1,
+    });
     const stoneClassNames = classnames('stone', {
-      blank: color !== BOARD_CONSTANTS.BLACK && color !== BOARD_CONSTANTS.WHITE,
-      black: color === BOARD_CONSTANTS.BLACK,
-      white: color === BOARD_CONSTANTS.WHITE,
-      nextblack: nextMoveColor === BOARD_CONSTANTS.BLACK,
-      nextwhite: nextMoveColor === BOARD_CONSTANTS.WHITE,
-    })
+      blank: color !== BLACK && color !== WHITE,
+      black: color === BLACK,
+      white: color === WHITE,
+      nextblack: nextMoveColor === BLACK,
+      nextwhite: nextMoveColor === WHITE,
+    });
     return (
-      <div className={squareClassNames}>
-        <div className="horiz-grid" />
-        <div className="vert-grid" />
+      <div className={squareClassNames} onClick={() => addStone(x, y)}>
         <div className={stoneClassNames} />
       </div>
     );

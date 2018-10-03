@@ -46,6 +46,7 @@
         }
         &.lastcol {
           background-image: url('./corner.png');
+          transform: rotate(-90deg);
         }
       }
 

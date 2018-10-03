@@ -1,76 +1,61 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _forEach from 'lodash/forEach';
 import _map from 'lodash/map';
 
+import { PAD } from './boardConstants';
 import BoardSquare from './BoardSquare.react';
-import BOARD_CONSTANTS from './boardConstants'
 
 import './board.css';
 
 
 class Board extends Component {
   static propTypes = {
+    addStone: PropTypes.function,
+    back: PropTypes.function,
+    board: PropTypes.array,
     boardSize: PropTypes.number,
+    forward: PropTypes.function,
+    initialize: PropTypes.function,
     initialStones: PropTypes.array,
     nextMoveColor: PropTypes.number,
   };
 
-  static defaultProps = {
-    boardSize: 19,
-    initialStones: [],
-    nextMoveColor: BOARD_CONSTANTS.BLACK,
-  };
-
-  state = {
-    board: [[]],
+  reset = () => {
+    const { boardSize, initialize, initialStones } = this.props;
+    initialize(initialStones, boardSize);
   };
 
   componentDidMount() {
-    const { boardSize, initialStones } = this.props;
-    var board = new Array(boardSize);
-    for (var i = 0; i < boardSize; i++) {
-      board[i] = new Array(boardSize);
-    }
-
-    let minX = boardSize;
-    let maxX = -1;
-    let minY = boardSize;
-    let maxY = -1;
-
-    _forEach(initialStones, (stone) => {
-      const { x, y, color } = stone;
-      board[y][x] = color;
-      minX = Math.min(minX, x);
-      maxX = Math.max(maxX, x);
-      minY = Math.min(minY, y);
-      maxY = Math.max(maxY, y);
-    });
-
-    this.setState({
-      board: board,
-      minX: minX,
-      maxX: maxX,
-      minY: minY,
-      maxY: maxY,
-    });
+    this.reset();
   }
 
   render() {
-    const { boardSize, nextMoveColor } = this.props;
-    const { board, minX, maxX, minY, maxY } = this.state;
+    const {
+      addStone,
+      back,
+      board,
+      boardSize,
+      forward,
+      nextMoveColor } = this.props;
+
+    const minX = 0;
+    const maxX = 20;
+    const minY = 0;
+    const maxY = 20;
+
     const boardSquares = _map(board, (row, rowIdx) => {
       const rowSquares = _map(row, (color, colIdx) => {
-        if (colIdx < minX - BOARD_CONSTANTS.PAD || colIdx > maxX + BOARD_CONSTANTS.PAD ||
-            rowIdx < minY - BOARD_CONSTANTS.PAD || rowIdx > maxY + BOARD_CONSTANTS.PAD) {
+        if (colIdx < minX - PAD || colIdx > maxX + PAD ||
+            rowIdx < minY - PAD || rowIdx > maxY + PAD) {
           return null;
         }
         return (
           <BoardSquare
             key={`${colIdx}_${rowIdx}`}
+            addStone={addStone}
             boardSize={boardSize}
-            x={rowIdx}
-            y={colIdx}
+            x={colIdx}
+            y={rowIdx}
             color={color}
             nextMoveColor={nextMoveColor}
           />
@@ -86,6 +71,9 @@ class Board extends Component {
 
     return (
       <div className="board">
+        <div onClick={back}>Back</div>
+        <div onClick={forward}>Forward</div>
+        <div onClick={this.reset}>Reset</div>
         {boardSquares}
       </div>
     );

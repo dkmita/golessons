@@ -14,9 +14,7 @@ import {
 } from './boardConstants';
 
 const defaultState = {
-  board: [[undefined, undefined, undefined],
-    [undefined, undefined, undefined],
-    [undefined, undefined, undefined]],
+  board: [[]],
   currentStone: undefined,
   nextStoneId: 0,
   nextMoveColor: BLACK,
@@ -48,13 +46,13 @@ const getAdjacentLocations = (loc) => {
   ]
 }
 
-const calcRemovedStones = (board, boardSize, addedStone) => {
+const calcRemovedStones = (board, addedStone) => {
   let removedStones = [];
   const adjacent = getAdjacentLocations(addedStone);
   const capturingStoneColor = addedStone.color;
   const visitedStones = {[getNextIndex(addedStone)]: addedStone};
   _forEach(adjacent, (location) => {
-    if (isInvalidOrVisitedLocation(location, visitedStones, boardSize)) {
+    if (isInvalidOrVisitedLocation(location, visitedStones, board.length)) {
       return;
     }
     const color = board[location.y][location.x];
@@ -66,7 +64,7 @@ const calcRemovedStones = (board, boardSize, addedStone) => {
     let foundLiberty = false;
 
     const checkLocation = (loc) => {
-      if (isInvalidOrVisitedLocation(loc, visitedStones, boardSize)) {
+      if (isInvalidOrVisitedLocation(loc, visitedStones, board.length)) {
         return;
       }
       const color = board[loc.y][loc.x];
@@ -119,7 +117,7 @@ function boardReducer(state = {defaultState}, action) {
       else {
         addedStone.color = state.nextMoveColor;
         addedStone.id = nextStoneId++;
-        addedStone.removedStones = calcRemovedStones(state.board, state.boardSize, addedStone);;
+        addedStone.removedStones = calcRemovedStones(state.board, addedStone);;
         addedStone.previousStone = state.currentStone;
         state.stones[addedStone.id] = addedStone;
         prevNextStones[getNextIndex(addedStone)] = addedStone;
@@ -188,7 +186,6 @@ function boardReducer(state = {defaultState}, action) {
 
       return {
         board: board,
-        boardSize: boardSize,
         currentStone: stones[0],
         nextStoneId: stoneId,
         nextMoveColor: BLACK,

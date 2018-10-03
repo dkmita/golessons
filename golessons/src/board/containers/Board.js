@@ -6,7 +6,6 @@ import Board from '../Board.react';
 const mapStateToProps = state => {
   return {
     board: state.boardReducer.board,
-    boardSize: state.boardReducer.boardSize,
     nextMoveColor: state.boardReducer.nextMoveColor,
   }
 }

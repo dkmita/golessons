@@ -7,7 +7,7 @@ import { BLACK, WHITE } from './boardConstants'
 
 class BoardSquare extends Component {
   static propTypes = {
-    addStone: PropTypes.function,
+    addStone: PropTypes.func,
     boardSize: PropTypes.number.isRequired,
     color: PropTypes.number,
     x: PropTypes.number.isRequired,

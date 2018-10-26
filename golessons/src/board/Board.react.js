@@ -10,23 +10,41 @@ import './board.css';
 
 class Board extends Component {
   static propTypes = {
-    addStone: PropTypes.function,
-    back: PropTypes.function,
+    // redux state
     board: PropTypes.array,
     boardSize: PropTypes.number,
-    forward: PropTypes.function,
-    initialize: PropTypes.function,
-    initialStones: PropTypes.array,
+    comment: PropTypes.string,
     nextMoveColor: PropTypes.number,
+
+    // redux dispatch
+    addStone: PropTypes.func,
+    back: PropTypes.func,
+    forward: PropTypes.func,
+    initialize: PropTypes.func,
   };
 
+  state = {
+    gameTree: {},
+    message: "Loading..."
+  }
+
   reset = () => {
-    const { boardSize, initialize, initialStones } = this.props;
-    initialize(initialStones, boardSize);
+    this.props.initialize(this.state.gameTree);
+    this.setState({ message: "Loaded!" });
   };
 
   componentDidMount() {
-    this.reset();
+    fetch('api/something')
+      .then((response) => {
+        if (response.ok) {
+            response.json().then(gameTree => {
+              this.setState({ gameTree }, this.reset);
+            });
+        }
+      })
+      .catch((error) => {
+        this.setState({ response: error });
+      });
   }
 
   render() {
@@ -35,6 +53,7 @@ class Board extends Component {
       back,
       board,
       boardSize,
+      comment,
       forward,
       nextMoveColor } = this.props;
 
@@ -69,11 +88,15 @@ class Board extends Component {
     });
 
     return (
-      <div className="board">
-        <div onClick={back}>Back</div>
-        <div onClick={forward}>Forward</div>
-        <div onClick={this.reset}>Reset</div>
-        {boardSquares}
+      <div className="board-container">
+        <span> {this.state.message} </span>
+        <span onClick={back}>Back</span>
+        <span onClick={forward}>Forward</span>
+        <span onClick={this.reset}>Reset</span>
+        <div>{comment}</div>
+        <div className="board">
+          {boardSquares}
+        </div>
       </div>
     );
   }

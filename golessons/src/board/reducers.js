@@ -15,6 +15,8 @@ import {
 
 const defaultState = {
   board: [[]],
+  boardSize: 0,
+  comment: '',
   currentStone: undefined,
   nextStoneId: 0,
   nextMoveColor: BLACK,
@@ -93,6 +95,17 @@ const calcRemovedStones = (board, addedStone) => {
   return removedStones;
 }
 
+/*
+addGameTree = (gameTree) => {
+  if (gameTree.children) {
+    _forEach(gameTree.children, (child) => {
+      dispatch(ADD_STONE, child);
+
+    })
+  }
+}*/
+
+
 function boardReducer(state = {defaultState}, action) {
   switch (action.type) {
     case ADD_STONE:
@@ -169,23 +182,28 @@ function boardReducer(state = {defaultState}, action) {
       );
 
     case INITIALIZE:
-      const { initialStones, boardSize } = action;
-      const board = new Array(boardSize);
-      for (let i = 0; i < boardSize; i++) {
-        board[i] = new Array(boardSize);
+      const { gameTree } = action;
+      const board = new Array(gameTree.boardSize);
+      for (let i = 0; i < gameTree.boardSize; i++) {
+        board[i] = new Array(gameTree.boardSize);
       }
 
       const stones = { 0: { id: 0, color: WHITE } }; // root of tree
       let stoneId = 1;
-      _forEach(initialStones, (stone) => {
+      _forEach(gameTree.addedStones, (stone) => {
         stone.id = stoneId++;
         stones[stone.id] = stone;
         const { x, y, color } = stone;
         board[y][x] = color;
       });
 
+
+
+
       return {
         board: board,
+        boardSize: gameTree.boardSize,
+        comment: gameTree.comment,
         currentStone: stones[0],
         nextStoneId: stoneId,
         nextMoveColor: BLACK,

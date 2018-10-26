@@ -2,6 +2,7 @@
   "name": "golessons",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8000",
   "dependencies": {
     "classnames": "^2.2.6",
     "lodash": "^4.17.11",

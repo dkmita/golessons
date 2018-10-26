@@ -15,6 +15,6 @@ export function forward() {
   return { type: FORWARD }
 }
 
-export function initialize(initialStones, boardSize) {
-  return { type: INITIALIZE, initialStones, boardSize }
+export function initialize(gameTree) {
+  return { type: INITIALIZE, gameTree }
 }

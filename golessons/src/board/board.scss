@@ -60,17 +60,11 @@
           box-sizing: border-box;
 
           &.blank {
-            &:hover {
-              opacity: 0.5;
-
-              &.nextblack {
-                background-color: black;
-              }
-
-              &.nextwhite {
-                background-color: white;
-                border: 2px black solid;
-              }
+            &.nextmove {
+              width: 7px;
+              height: 7px;
+              margin: 9px;
+              background-color: black;
             }
           }
 
@@ -81,6 +75,22 @@
           &.white {
             border: 2px black solid;
             background-color: white
+          }
+        }
+
+        &:hover .stone.blank {
+          width: 100%;
+          height: 100%;
+          opacity: 0.5;
+          margin: 0;
+
+          &.nextblack {
+            background-color: black;
+          }
+
+          &.nextwhite {
+            background-color: white;
+            border: 2px black solid;
           }
         }
       }

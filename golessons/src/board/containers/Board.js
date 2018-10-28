@@ -7,14 +7,14 @@ const mapStateToProps = state => {
   return {
     board: state.boardReducer.board,
     boardSize: state.boardReducer.boardSize,
-    comment: state.boardReducer.comment,
+    currentStone: state.boardReducer.currentStone,
     nextMoveColor: state.boardReducer.nextMoveColor,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    addStone: (x, y) => dispatch(addStone({x, y})),
+    addStone: (x, y, color) => dispatch(addStone({x, y, color})),
     back: () => dispatch(back()),
     forward: () => dispatch(forward()),
     initialize: (gameTree) => dispatch(initialize(gameTree)),

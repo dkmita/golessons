@@ -12,6 +12,7 @@ def translate_sgf(sgf):
     def translate_sgf_inner(sgf):
         print('translate: ' + sgf)
         node = {}
+        root_node = node;
 
         tree_match = re.match(r'\s*\(;(?P<node_seq>.*?)\s*(?P<children>\)*\s*\(\s*;.*)', sgf, re.S)
         if not tree_match:
@@ -26,6 +27,7 @@ def translate_sgf(sgf):
                 if 'children' not in node:
                     node['children'] = []
                 node['children'].append(child_node)
+                print("NODE: " + str(node))
                 node = child_node
                 # go on with next node
                 node_seq = node_seq[1:]
@@ -60,12 +62,13 @@ def translate_sgf(sgf):
 
         while children_sgf:
             if children_sgf[0] == ')':
-                return node, children_sgf[1:]
+                return root_node, children_sgf[1:]
             child_node, children_sgf = translate_sgf_inner(children_sgf)
             if 'children' not in node:
                 node['children'] = []
             node['children'].append(child_node)
 
     data, _ = translate_sgf_inner(sgf)
+    print(data)
     return data
 

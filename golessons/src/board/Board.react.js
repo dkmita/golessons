@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _map from 'lodash/map';
 
 import { PAD } from './boardConstants';
+import getLocHash from './boardutil';
 import BoardSquare from './BoardSquare.react';
 
 import './board.css';
@@ -13,7 +14,7 @@ class Board extends Component {
     // redux state
     board: PropTypes.array,
     boardSize: PropTypes.number,
-    comment: PropTypes.string,
+    currentStone: PropTypes.object,
     nextMoveColor: PropTypes.number,
 
     // redux dispatch
@@ -45,6 +46,7 @@ class Board extends Component {
       .catch((error) => {
         this.setState({ response: error });
       });
+      //this.props.initialize({boardSize: 19})
   }
 
   render() {
@@ -53,7 +55,7 @@ class Board extends Component {
       back,
       board,
       boardSize,
-      comment,
+      currentStone,
       forward,
       nextMoveColor } = this.props;
 
@@ -68,15 +70,18 @@ class Board extends Component {
             rowIdx < minY - PAD || rowIdx > maxY + PAD) {
           return null;
         }
+        const locHash = getLocHash({ x: colIdx, y: rowIdx });
+        const isNextMove = !!(currentStone.nextStones && currentStone.nextStones[locHash]);
         return (
           <BoardSquare
             key={`${colIdx}_${rowIdx}`}
             addStone={addStone}
             boardSize={boardSize}
+            isNextMove={isNextMove}
+            nextMoveColor={nextMoveColor}
             x={colIdx}
             y={rowIdx}
             color={color}
-            nextMoveColor={nextMoveColor}
           />
         );
       });
@@ -93,10 +98,10 @@ class Board extends Component {
         <span onClick={back}>Back</span>
         <span onClick={forward}>Forward</span>
         <span onClick={this.reset}>Reset</span>
-        <div>{comment}</div>
         <div className="board">
           {boardSquares}
         </div>
+        <div>{currentStone ? currentStone.comment : ''}</div>
       </div>
     );
   }

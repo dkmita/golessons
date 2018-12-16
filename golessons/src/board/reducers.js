@@ -94,6 +94,9 @@ const calcCapturedStones = (board, addedStone) => {
 }
 
 const addGameTree = (board, currentStone, nextStoneId, treeNode, stones) => {
+  if (treeNode.x === undefined || treeNode.y === undefined) {
+    const stall = true;
+  }
   const addedStone = addStone(board, currentStone, nextStoneId, treeNode, stones, true);
   nextStoneId = (addedStone && (addedStone.id === nextStoneId)) ? nextStoneId+1 : nextStoneId;
   _forEach(treeNode.children, (child) => {
@@ -134,8 +137,8 @@ const addStone = (board, currentStone, nextStoneId, stone, stones, isInitializat
   stone.lastSeen = (new Date()).getTime();
 
   // update the board
-  _forEach(stone.capturedStones, (removedStone) => {
-    board[removedStone.y][removedStone.x] = undefined;
+  _forEach(stone.capturedStones, (capturedStone) => {
+    board[capturedStone.y][capturedStone.x] = undefined;
   });
   return stone;
 }
@@ -153,6 +156,27 @@ const back = (board, currentStone, removeHistory = false) => {
   });
 }
 
+const isKo = (lastStone, newStone) => {
+  const lastCapturedStones = lastStone.capturedStones;
+  const newCapturedStones = newStone.capturedStones;
+  if (!lastCapturedStones || lastCapturedStones.length !== 1) {
+    return false;
+  }
+  const lastCapturedStone = lastCapturedStones[0];
+  if (lastCapturedStone.x !== newStone.x || lastCapturedStone.y !== newStone.y) {
+    return false;
+  }
+  if (!newCapturedStones || newCapturedStones.length !== 1) {
+    return false;
+  }
+  const newCapturedStone = newCapturedStones[0];
+  if (newCapturedStone.x !== lastStone.x || newCapturedStone.y !== lastStone.y) {
+    return false;
+  }
+  return true;
+}
+
+
 function boardReducer(state = {defaultState}, action) {
   switch (action.type) {
     case ADD_STONE:
@@ -160,9 +184,14 @@ function boardReducer(state = {defaultState}, action) {
       if (!addedStone) {
         return state;
       }
+
       if (getGroupIfNoLiberties(state.board, addedStone, addedStone.color).length > 0) {
         back(state.board, addedStone, true);
         return Object.assign({}, state, { error: "Move is suicidal" });
+      }
+      if (isKo(state.currentStone, addedStone)) {
+        back(state.board, addedStone, true);
+        return Object.assign({}, state, { error: "Ko" });
       }
       const nextInitialStones = _filter(addedStone.nextStones, (stone) => stone.isInitial);
       if (nextInitialStones.length > 0) {
@@ -174,6 +203,7 @@ function boardReducer(state = {defaultState}, action) {
           currentStone: addedStone,
           nextStoneId: addedStone.id === state.nextStoneId ? state.nextStoneId+1 : state.nextStoneId,
           nextMoveColor: addedStone.color === BLACK ? WHITE : BLACK,
+          error: '',
         }
       );
 
@@ -195,8 +225,8 @@ function boardReducer(state = {defaultState}, action) {
       }
       const nextStone = _values(state.currentStone.nextStones)
         .reduce((move1, move2) => (move1.lastSeen > move2.lastSeen) ? move1 : move2);
-      _forEach(nextStone.capturedStones, (removedStone) => {
-        state.board[removedStone.y][removedStone.x] = undefined;
+      _forEach(nextStone.capturedStones, (capturedStone) => {
+        state.board[capturedStone.y][capturedStone.x] = undefined;
       });
       state.board[nextStone.y][nextStone.x] = nextStone.color;
       return Object.assign({}, state,
@@ -232,7 +262,7 @@ function boardReducer(state = {defaultState}, action) {
         boardSize: gameTree.boardSize,
         currentStone: stones[0],
         nextStoneId: nextStoneId,
-        nextMoveColor: BLACK,
+        nextMoveColor: gameTree.firstMove || BLACK,
         stones: stones,
       };
     default:

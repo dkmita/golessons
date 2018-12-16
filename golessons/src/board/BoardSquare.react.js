@@ -11,6 +11,7 @@ class BoardSquare extends Component {
     boardSize: PropTypes.number.isRequired,
     color: PropTypes.number,
     isNextMove: PropTypes.bool.isRequired,
+    label: PropTypes.string,
     nextMoveColor: PropTypes.number.isRequired,
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
@@ -18,10 +19,11 @@ class BoardSquare extends Component {
 
   static defaultProps = {
     color: 0,
+    label: '',
   }
 
   render() {
-    const { addStone, boardSize, isNextMove, nextMoveColor, x, y, color } = this.props;
+    const { addStone, boardSize, isNextMove, label, nextMoveColor, x, y, color } = this.props;
     const squareClassNames = classnames('square', {
       firstcol: x === 0,
       lastcol: x === boardSize-1,
@@ -38,7 +40,7 @@ class BoardSquare extends Component {
     });
     return (
       <div className={squareClassNames} onClick={() => addStone(x, y, nextMoveColor)}>
-        <div className={stoneClassNames} />
+        <div className={stoneClassNames}>{label}</div>
       </div>
     );
   }

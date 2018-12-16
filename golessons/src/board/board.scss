@@ -5,6 +5,10 @@
     margin-right: 1rem;
   }
 
+  .error {
+    color: red;
+  }
+
   .board {
     margin: auto;
 
@@ -17,6 +21,9 @@
         height: 25px;
         background-image: url('./middle.png');
         background-size: cover;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
 
         &.firstcol {
           background-image: url('./side.png');
@@ -33,15 +40,18 @@
           &.firstcol {
             background-image: url('./corner.png');
             transform: rotate(90deg);
+            > * { transform: rotate(-90deg);}
           }
           &.lastcol {
             background-image: url('./corner.png');
             transform: rotate(180deg);
+            > * { transform: rotate(180deg);}
           }
         }
         &.lastrow {
           background-image: url('./side.png');
           transform: rotate(-90deg);
+          > * { transform: rotate(90deg);}
 
           &.firstcol {
             background-image: url('./corner.png');
@@ -50,6 +60,7 @@
           &.lastcol {
             background-image: url('./corner.png');
             transform: rotate(-90deg);
+            > * { transform: rotate(90deg);}
           }
         }
 

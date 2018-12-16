@@ -11,10 +11,13 @@ import './board.css';
 
 class Board extends Component {
   static propTypes = {
+    id: PropTypes.number,
+
     // redux state
     board: PropTypes.array,
     boardSize: PropTypes.number,
     currentStone: PropTypes.object,
+    error: PropTypes.string,
     nextMoveColor: PropTypes.number,
 
     // redux dispatch
@@ -34,8 +37,8 @@ class Board extends Component {
     this.setState({ message: "Loaded!" });
   };
 
-  componentDidMount() {
-    fetch('api/something')
+  loadData = () => {
+    fetch(`api/problem/${this.props.id}/`)
       .then((response) => {
         if (response.ok) {
             response.json().then(gameTree => {
@@ -46,7 +49,16 @@ class Board extends Component {
       .catch((error) => {
         this.setState({ response: error });
       });
-      //this.props.initialize({boardSize: 19})
+  };
+
+  componentDidMount() {
+    this.loadData();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.id !== prevProps.id) {
+      this.loadData();
+    }
   }
 
   render() {
@@ -56,6 +68,7 @@ class Board extends Component {
       board,
       boardSize,
       currentStone,
+      error,
       forward,
       nextMoveColor } = this.props;
 
@@ -78,6 +91,7 @@ class Board extends Component {
             addStone={addStone}
             boardSize={boardSize}
             isNextMove={isNextMove}
+            label={currentStone.labels ? currentStone.labels[locHash] : ''}
             nextMoveColor={nextMoveColor}
             x={colIdx}
             y={rowIdx}
@@ -102,6 +116,7 @@ class Board extends Component {
           {boardSquares}
         </div>
         <div>{currentStone ? currentStone.comment : ''}</div>
+        <div className="error">{error}</div>
       </div>
     );
   }

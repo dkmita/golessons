@@ -1,10 +1,14 @@
 SGFS = ["""
+(;GM[1]SZ[19]C[New lesson])
+""",
+
+    """
 (;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]
 RU[Japanese]SZ[19]SO[https://gogameguru.com/]C[Black to play.
 
 https://gogameguru.com/]AW[pq][qq][sq][or][qr][sr][os]AB[op][pp][qp][rp][sp][mq][oq][nr][qs]
 (;B[rs]
-;W[rr]LB[aa:X]
+;W[rr]
 (;B[ns]C[Correct])
 (;B[ps]LB[ns:A]C[Also correct. Playing this move at A is usually better style because it leaves less bad aji (potential for bad things to happen) on the outside.]))
 (;B[rq]

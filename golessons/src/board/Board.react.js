@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import _map from 'lodash/map';
 
 import { PAD } from './boardConstants';
-import getLocHash from './boardutil';
+import { getLocHash, simplifyGameTree } from './boardutil';
 import BoardSquare from './BoardSquare.react';
 
 import './board.css';
@@ -19,12 +20,14 @@ class Board extends Component {
     currentStone: PropTypes.object,
     error: PropTypes.string,
     nextMoveColor: PropTypes.number,
+    rootStone: PropTypes.object,
 
     // redux dispatch
     addStone: PropTypes.func,
     back: PropTypes.func,
     forward: PropTypes.func,
     initialize: PropTypes.func,
+    updateComment: PropTypes.func,
   };
 
   state = {
@@ -37,9 +40,9 @@ class Board extends Component {
     this.setState({ message: "Loaded!" });
   };
 
-  loadData = () => {
-    fetch(`api/problem/${this.props.id}/`)
-      .then((response) => {
+  loadData = (lessonName) => {
+    const apiUrl = lessonName ? `api/lesson/${lessonName}/` : `api/problem/${this.props.id}/`
+    fetch(apiUrl).then((response) => {
         if (response.ok) {
             response.json().then(gameTree => {
               this.setState({ gameTree }, this.reset);
@@ -51,9 +54,36 @@ class Board extends Component {
       });
   };
 
+  saveLesson = () => {
+    const simplifiedGameTree = simplifyGameTree(this.props.rootStone);
+    fetch(`api/save-lesson`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        lessonName: "first-lesson",
+        lessonJson: JSON.stringify(simplifiedGameTree)
+      })
+    })
+      .then((response) => {
+        if (response.ok) {
+          this.setState({ message: "Saved!" });
+        }
+      })
+      .catch((error) => {
+        this.setState({ message: "Error saving" });
+      });
+  };
+
+  updateComment = (evt) => {
+    this.props.updateComment(evt.target.value);
+  };
+
   componentDidMount() {
     this.loadData();
-  }
+  };
 
   componentDidUpdate(prevProps) {
     if (this.props.id !== prevProps.id) {
@@ -70,7 +100,8 @@ class Board extends Component {
       currentStone,
       error,
       forward,
-      nextMoveColor } = this.props;
+      nextMoveColor,
+    } = this.props;
 
     const minX = 0;
     const maxX = 20;
@@ -108,14 +139,26 @@ class Board extends Component {
 
     return (
       <div className="board-container">
-        <span> {this.state.message} </span>
-        <span onClick={back}>Back</span>
-        <span onClick={forward}>Forward</span>
-        <span onClick={this.reset}>Reset</span>
+        <div>
+          <span> {this.state.message} </span>
+          <span onClick={() => back(false)}>Back</span>
+          <span onClick={forward}>Forward</span>
+          <span onClick={this.reset}>Reset</span>
+        </div>
+        <div>
+          <span onClick={this.saveLesson}>Save</span>
+          <span onClick={() => this.loadData('first-lesson')}>Load</span>
+          <span onClick={() => back(true)}>Delete</span>
+        </div>
         <div className="board">
           {boardSquares}
         </div>
-        <div>{currentStone ? currentStone.comment : ''}</div>
+        <div>
+          <input type="textbox"
+            placeholder={currentStone ? currentStone.comment : ''}
+            onChange={this.updateComment}
+            />
+        </div>
         <div className="error">{error}</div>
       </div>
     );

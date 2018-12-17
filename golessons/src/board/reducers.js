@@ -2,13 +2,14 @@ import { combineReducers } from 'redux'
 import _forEach from 'lodash/forEach';
 import _values from 'lodash/values';
 import _filter from 'lodash/filter';
-import getLocHash from './boardutil';
+import { getLocHash } from './boardutil';
 
 import {
   ADD_STONE,
   BACK,
   FORWARD,
   INITIALIZE,
+  UPDATE_COMMENT,
 } from './actions'
 import {
   BLACK,
@@ -94,9 +95,6 @@ const calcCapturedStones = (board, addedStone) => {
 }
 
 const addGameTree = (board, currentStone, nextStoneId, treeNode, stones) => {
-  if (treeNode.x === undefined || treeNode.y === undefined) {
-    const stall = true;
-  }
   const addedStone = addStone(board, currentStone, nextStoneId, treeNode, stones, true);
   nextStoneId = (addedStone && (addedStone.id === nextStoneId)) ? nextStoneId+1 : nextStoneId;
   _forEach(treeNode.children, (child) => {
@@ -125,8 +123,11 @@ const addStone = (board, currentStone, nextStoneId, stone, stones, isInitializat
     stone = currentStone.nextStones[getLocHash(stone)];
   }
   else {
+    const capturedStones = calcCapturedStones(board, stone);
+    if (capturedStones.length) {
+      stone.capturedStones = capturedStones;
+    }
     stone.id = nextStoneId;
-    stone.capturedStones = calcCapturedStones(board, stone);;
     stone.previousStone = currentStone;
     stones[stone.id] = stone;
     currentStone.nextStones[getLocHash(stone)] = stone;
@@ -143,11 +144,11 @@ const addStone = (board, currentStone, nextStoneId, stone, stones, isInitializat
   return stone;
 }
 
-const back = (board, currentStone, removeHistory = false) => {
+const back = (board, currentStone, remove = false) => {
   if (!currentStone.previousStone) {
     return null;
   }
-  if (removeHistory) {
+  if (remove) {
     delete currentStone.previousStone.nextStones[getLocHash(currentStone)];
   }
   board[currentStone.y][currentStone.x] = undefined;
@@ -185,7 +186,7 @@ function boardReducer(state = {defaultState}, action) {
         return state;
       }
 
-      if (getGroupIfNoLiberties(state.board, addedStone, addedStone.color).length > 0) {
+      if (getGroupIfNoLiberties(state.board, addedStone, addedStone.color).length) {
         back(state.board, addedStone, true);
         return Object.assign({}, state, { error: "Move is suicidal" });
       }
@@ -208,7 +209,8 @@ function boardReducer(state = {defaultState}, action) {
       );
 
     case BACK:
-      back(state.board, state.currentStone);
+      const { shouldRemove } = action;
+      back(state.board, state.currentStone, shouldRemove);
       if (!state.currentStone.previousStone) {
         return state;
       }
@@ -232,7 +234,7 @@ function boardReducer(state = {defaultState}, action) {
       return Object.assign({}, state,
         {
           currentStone: nextStone,
-          nextMoveColor: state.currentStone.color,
+          nextMoveColor: state.currentStone.color || (state.nextMoveColor === BLACK ? WHITE : BLACK)
         }
       );
 
@@ -243,8 +245,14 @@ function boardReducer(state = {defaultState}, action) {
         board[i] = new Array(gameTree.boardSize);
       }
 
-      const currentStone = { id: 0, color: WHITE, comment: gameTree.comment }
-      const stones = { 0: currentStone }; // root of tree
+      const rootStone = {
+        addedStones: gameTree.addedStones,
+        boardSize: gameTree.boardSize,
+        comment: gameTree.comment,
+        firstMove: gameTree.firstMove,
+        id: 0,
+      };
+      const stones = { 0: rootStone }; // root of tree
       let nextStoneId = 1;
       _forEach(gameTree.addedStones, (stone) => {
         stone.id = nextStoneId++;
@@ -254,7 +262,7 @@ function boardReducer(state = {defaultState}, action) {
       });
 
       _forEach(gameTree.children, (child) => {
-        nextStoneId = addGameTree(board, currentStone, nextStoneId, child, stones);
+        nextStoneId = addGameTree(board, rootStone, nextStoneId, child, stones);
       });
 
       return {
@@ -263,8 +271,14 @@ function boardReducer(state = {defaultState}, action) {
         currentStone: stones[0],
         nextStoneId: nextStoneId,
         nextMoveColor: gameTree.firstMove || BLACK,
+        rootStone: rootStone,
         stones: stones,
       };
+
+    case UPDATE_COMMENT:
+      state.currentStone.comment = action.comment;
+      return state;
+
     default:
       return state;
   }

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { addStone, back, forward, initialize } from '../actions';
+import { addStone, back, forward, initialize, updateComment } from '../actions';
 
 import Board from '../Board.react';
 
@@ -8,17 +8,19 @@ const mapStateToProps = state => {
     board: state.boardReducer.board,
     boardSize: state.boardReducer.boardSize,
     currentStone: state.boardReducer.currentStone,
-    nextMoveColor: state.boardReducer.nextMoveColor,
     error: state.boardReducer.error,
+    nextMoveColor: state.boardReducer.nextMoveColor,
+    rootStone: state.boardReducer.rootStone,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     addStone: (x, y, color) => dispatch(addStone({x, y, color})),
-    back: () => dispatch(back()),
+    back: (shouldRemove) => dispatch(back(shouldRemove)),
     forward: () => dispatch(forward()),
     initialize: (gameTree) => dispatch(initialize(gameTree)),
+    updateComment: (comment) => dispatch(updateComment(comment)),
   }
 }
 

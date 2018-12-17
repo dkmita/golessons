@@ -11,10 +11,6 @@ class App extends Component {
     id: 0,
   };
 
-  onChange = (ev) => {
-    ;
-  }
-
   render() {
     const options = [];
     for (let i = 0; i <= PROBLEM_COUNT; i++) {

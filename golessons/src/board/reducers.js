@@ -5,6 +5,7 @@ import _filter from 'lodash/filter';
 import { getLocHash } from './boardutil';
 
 import {
+  ADD_LABEL,
   ADD_STONE,
   BACK,
   FORWARD,
@@ -21,6 +22,7 @@ const defaultState = {
   boardSize: 0,
   comment: '',
   currentStone: undefined,
+  labels: undefined,
   nextStoneId: 0,
   nextMoveColor: BLACK,
   stones: {},
@@ -180,6 +182,18 @@ const isKo = (lastStone, newStone) => {
 
 function boardReducer(state = {defaultState}, action) {
   switch (action.type) {
+    case ADD_LABEL:
+      const { label } = action;
+      if (!state.currentStone.labels) {
+        state.currentStone.labels = {};
+      }
+      state.currentStone.labels[getLocHash(label)] = label.type;
+      return Object.assign({}, state,
+        {
+          currentLabels: Object.assign({}, state.currentStone.labels)
+        }
+      );
+
     case ADD_STONE:
       let addedStone = addStone(state.board, state.currentStone, state.nextStoneId, action.stone, state.stones)
       if (!addedStone) {
@@ -202,6 +216,7 @@ function boardReducer(state = {defaultState}, action) {
       return Object.assign({}, state,
         {
           currentStone: addedStone,
+          currentLabels: addedStone.labels,
           nextStoneId: addedStone.id === state.nextStoneId ? state.nextStoneId+1 : state.nextStoneId,
           nextMoveColor: addedStone.color === BLACK ? WHITE : BLACK,
           error: '',
@@ -217,6 +232,7 @@ function boardReducer(state = {defaultState}, action) {
       return Object.assign({}, state,
         {
           currentStone: state.currentStone.previousStone,
+          currentLabels: Object.assign({}, state.currentStone.previousStone.labels),
           nextMoveColor: state.currentStone.color,
         }
       );
@@ -234,6 +250,7 @@ function boardReducer(state = {defaultState}, action) {
       return Object.assign({}, state,
         {
           currentStone: nextStone,
+          currentLabels: nextStone.labels,
           nextMoveColor: state.currentStone.color || (state.nextMoveColor === BLACK ? WHITE : BLACK)
         }
       );
@@ -269,6 +286,7 @@ function boardReducer(state = {defaultState}, action) {
         board: board,
         boardSize: gameTree.boardSize,
         currentStone: stones[0],
+        currentLabels: stones[0].labels,
         nextStoneId: nextStoneId,
         nextMoveColor: gameTree.firstMove || BLACK,
         rootStone: rootStone,

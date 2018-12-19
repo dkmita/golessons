@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 import _map from 'lodash/map';
 
-import { PAD } from './boardConstants';
+import { PAD, STONE_MODE, SQ_MODE, TR_MODE, X_MODE } from './boardConstants';
 import { getLocHash, simplifyGameTree } from './boardutil';
-import BoardSquare from './BoardSquare.react';
+import BoardSquare from './containers/BoardSquare';
 
 import './board.css';
 
@@ -17,13 +17,13 @@ class Board extends Component {
     // redux state
     board: PropTypes.array,
     boardSize: PropTypes.number,
+    currentLabels: PropTypes.object,
     currentStone: PropTypes.object,
     error: PropTypes.string,
     nextMoveColor: PropTypes.number,
     rootStone: PropTypes.object,
 
     // redux dispatch
-    addStone: PropTypes.func,
     back: PropTypes.func,
     forward: PropTypes.func,
     initialize: PropTypes.func,
@@ -32,7 +32,8 @@ class Board extends Component {
 
   state = {
     gameTree: {},
-    message: "Loading..."
+    message: "Loading...",
+    mode: STONE_MODE
   }
 
   reset = () => {
@@ -77,6 +78,10 @@ class Board extends Component {
       });
   };
 
+  setMode = (mode) => () => {
+    this.setState({ mode });
+  };
+
   updateComment = (evt) => {
     this.props.updateComment(evt.target.value);
   };
@@ -93,10 +98,10 @@ class Board extends Component {
 
   render() {
     const {
-      addStone,
       back,
       board,
       boardSize,
+      currentLabels,
       currentStone,
       error,
       forward,
@@ -119,10 +124,11 @@ class Board extends Component {
         return (
           <BoardSquare
             key={`${colIdx}_${rowIdx}`}
-            addStone={addStone}
             boardSize={boardSize}
+            isCurrentStone={currentStone.x === colIdx && currentStone.y === rowIdx}
             isNextMove={isNextMove}
-            label={currentStone.labels ? currentStone.labels[locHash] : ''}
+            label={currentLabels ? currentLabels[locHash] : ''}
+            mode={this.state.mode}
             nextMoveColor={nextMoveColor}
             x={colIdx}
             y={rowIdx}
@@ -149,6 +155,13 @@ class Board extends Component {
           <span onClick={this.saveLesson}>Save</span>
           <span onClick={() => this.loadData('first-lesson')}>Load</span>
           <span onClick={() => back(true)}>Delete</span>
+        </div>
+        <div>
+          <span>{`<${this.state.mode}>`}</span>
+          <span onClick={this.setMode(STONE_MODE)}>Stone</span>
+          <span onClick={this.setMode(SQ_MODE)}>SQ</span>
+          <span onClick={this.setMode(TR_MODE)}>TR</span>
+          <span onClick={this.setMode(X_MODE)}>X</span>
         </div>
         <div className="board">
           {boardSquares}

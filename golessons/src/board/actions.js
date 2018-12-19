@@ -1,9 +1,14 @@
-export const ADD_STONE = 'PLAY_STONE';
+export const ADD_STONE = 'ADD_STONE';
+export const ADD_LABEL = 'ADD_LABEL'
 export const BACK = 'BACK';
 export const FORWARD = 'FORWARD';
 export const INITIALIZE = 'INITIALIZE';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
 
+
+export function addLabel(label) {
+  return { type: ADD_LABEL, label }
+}
 
 export function addStone(stone) {
   return { type: ADD_STONE, stone }

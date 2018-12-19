@@ -8,6 +8,7 @@ const mapStateToProps = state => {
     board: state.boardReducer.board,
     boardSize: state.boardReducer.boardSize,
     currentStone: state.boardReducer.currentStone,
+    currentLabels: state.boardReducer.currentLabels,
     error: state.boardReducer.error,
     nextMoveColor: state.boardReducer.nextMoveColor,
     rootStone: state.boardReducer.rootStone,

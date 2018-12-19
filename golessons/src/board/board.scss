@@ -80,7 +80,9 @@
           }
 
           &.black {
+            border: 2px black solid;
             background-color: black;
+            color: white;
           }
 
           &.white {
@@ -89,19 +91,20 @@
           }
         }
 
-        &:hover .stone.blank {
+        &:hover .stone.blank.stonemode {
           width: 100%;
           height: 100%;
           opacity: 0.5;
           margin: 0;
 
           &.nextblack {
+            border: 2px black solid;
             background-color: black;
           }
 
           &.nextwhite {
-            background-color: white;
             border: 2px black solid;
+            background-color: white;
           }
         }
       }

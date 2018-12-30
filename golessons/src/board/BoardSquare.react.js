@@ -64,7 +64,7 @@ class BoardSquare extends Component {
       nextmove: isNextMove,
       stonemode: mode === STONE_MODE,
     });
-    const mark = isCurrentStone ? 'O' : label;
+    const mark = isCurrentStone ? 'o' : label;
     return (
       <div className={squareClassNames} onClick={() => this.onClick(x, y)}>
         <div className={stoneClassNames}>{mark}</div>

@@ -3,6 +3,7 @@ export const ADD_LABEL = 'ADD_LABEL'
 export const BACK = 'BACK';
 export const FORWARD = 'FORWARD';
 export const INITIALIZE = 'INITIALIZE';
+export const SET_INIT_BOARD = 'SET_INIT_BOARD';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
 
 
@@ -24,6 +25,10 @@ export function forward() {
 
 export function initialize(gameTree) {
   return { type: INITIALIZE, gameTree }
+}
+
+export function setInitBoard(nextMoveColor) {
+  return { type: SET_INIT_BOARD, nextMoveColor }
 }
 
 export function updateComment(comment) {

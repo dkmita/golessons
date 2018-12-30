@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { addStone, back, forward, initialize, updateComment } from '../actions';
+import { addStone, back, forward, initialize, setInitBoard, updateComment } from '../actions';
 
 import Board from '../Board.react';
 
@@ -21,6 +21,7 @@ const mapDispatchToProps = dispatch => {
     back: (shouldRemove) => dispatch(back(shouldRemove)),
     forward: () => dispatch(forward()),
     initialize: (gameTree) => dispatch(initialize(gameTree)),
+    setInitBoard: (nextMoveColor) => dispatch(setInitBoard(nextMoveColor)),
     updateComment: (comment) => dispatch(updateComment(comment)),
   }
 }

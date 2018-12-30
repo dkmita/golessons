@@ -4,7 +4,7 @@ import Board from './board/containers/Board';
 import './App.css';
 
 
-const PROBLEM_COUNT = 85;
+const PROBLEM_COUNT = 90;
 
 class App extends Component {
   state = {

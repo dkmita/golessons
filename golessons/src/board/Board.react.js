@@ -13,8 +13,8 @@ import {
   SQ_MODE,
   STONE_MODE,
   TR_MODE,
-  X_MODE } from './boardConstants';
-
+  X_MODE
+} from './boardConstants';
 import { getLocHash, simplifyGameTree } from './boardutil';
 import BoardSquare from './containers/BoardSquare';
 

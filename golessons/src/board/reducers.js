@@ -262,14 +262,15 @@ function boardReducer(state = {defaultState}, action) {
 
     case INITIALIZE:
       const { gameTree } = action;
-      const board = new Array(gameTree.boardSize);
-      for (let i = 0; i < gameTree.boardSize; i++) {
-        board[i] = new Array(gameTree.boardSize);
+      const boardSize = gameTree.boardSize || 19;
+      const board = new Array(boardSize);
+      for (let i = 0; i < boardSize; i++) {
+        board[i] = new Array(boardSize);
       }
 
       const rootStone = {
         addedStones: gameTree.addedStones,
-        boardSize: gameTree.boardSize,
+        boardSize: boardSize,
         comment: gameTree.comment,
         firstMove: gameTree.firstMove,
         id: 0,
@@ -290,7 +291,7 @@ function boardReducer(state = {defaultState}, action) {
 
       return {
         board: board,
-        boardSize: gameTree.boardSize,
+        boardSize: boardSize,
         currentStone: stones[0],
         currentLabels: stones[0].labels,
         nextStoneId: nextStoneId,
